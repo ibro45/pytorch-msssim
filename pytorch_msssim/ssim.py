@@ -36,7 +36,7 @@ def gaussian_filter(input, win):
     return out
 
 
-def _ssim(X, Y, win, data_range=255, size_average=True, full=False, K=(0.01,0.03), nonnegative_ssim=False):
+def _ssim(X, Y, win, data_range=(0,255), size_average=True, full=False, K=(0.01,0.03), nonnegative_ssim=False):
     r""" Calculate ssim index for X and Y
     Args:
         X (torch.Tensor): images
@@ -50,12 +50,19 @@ def _ssim(X, Y, win, data_range=255, size_average=True, full=False, K=(0.01,0.03
     Returns:
         torch.Tensor: ssim results
     """
+
+    if data_range is None:
+        raise ValueError('data_range is not defined.')
+    
+    min_value, max_value = data_range
+    L = max_value - min_value
+
     K1, K2 = K
     batch, channel, height, width = X.shape
     compensation = 1.0
 
-    C1 = (K1 * data_range)**2
-    C2 = (K2 * data_range)**2
+    C1 = (K1 * L)**2
+    C2 = (K2 * L)**2
 
     win = win.to(X.device, dtype=X.dtype)
 
@@ -88,7 +95,7 @@ def _ssim(X, Y, win, data_range=255, size_average=True, full=False, K=(0.01,0.03
         return ssim_val
 
 
-def ssim(X, Y, win_size=11, win_sigma=1.5, win=None, data_range=255, size_average=True, full=False, K=(0.01, 0.03), nonnegative_ssim=False):
+def ssim(X, Y, win_size=11, win_sigma=1.5, win=None, data_range=(0,255), size_average=True, full=False, K=(0.01, 0.03), nonnegative_ssim=False):
     r""" interface of ssim
     Args:
         X (torch.Tensor): a batch of images, (N,C,H,W)
@@ -140,7 +147,7 @@ def ssim(X, Y, win_size=11, win_sigma=1.5, win=None, data_range=255, size_averag
         return ssim_val
 
 
-def ms_ssim(X, Y, win_size=11, win_sigma=1.5, win=None, data_range=255, size_average=True, full=False, weights=None, K=(0.01, 0.03), nonnegative_ssim=False):
+def ms_ssim(X, Y, win_size=11, win_sigma=1.5, win=None, data_range=(0,255), size_average=True, full=False, weights=None, K=(0.01, 0.03), nonnegative_ssim=False):
     r""" interface of ms-ssim
     Args:
         X (torch.Tensor): a batch of images, (N,C,H,W)
