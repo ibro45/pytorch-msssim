@@ -230,6 +230,10 @@ class SSIM(torch.nn.Module):
         self.nonnegative_ssim = nonnegative_ssim
 
     def forward(self, X, Y):
+        if len(X.shape) == 5:
+            reshape_to_4dim = lambda tensor: tensor.view(-1, *tensor.shape[2:])
+            X = reshape_to_4dim(X)
+            Y = reshape_to_4dim(Y)
         return ssim(X, Y, win=self.win, data_range=self.data_range, size_average=self.size_average, K=self.K, nonnegative_ssim=self.nonnegative_ssim)
 
     
@@ -257,4 +261,8 @@ class MS_SSIM(torch.nn.Module):
         self.nonnegative_ssim = nonnegative_ssim
 
     def forward(self, X, Y):
+        if len(X.shape) == 5:
+            reshape_to_4dim = lambda tensor: tensor.view(-1, *tensor.shape[2:])
+            X = reshape_to_4dim(X)
+            Y = reshape_to_4dim(Y)
         return ms_ssim(X, Y, win=self.win, size_average=self.size_average, data_range=self.data_range, weights=self.weights, K=self.K, nonnegative_ssim=self.nonnegative_ssim)
