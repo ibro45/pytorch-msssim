@@ -1,3 +1,8 @@
+# PyTorch SSIM and MS-SSIM - 2D and 3D
+
+- 3D support is implemented through "conversion" of 3D images (5D tensors) to 2D images (4D tensors) by combining the the channel (C) and depth (D) of a 3D tensor (N,C,D,H,W) 
+- This fork allows more specific, `(min_value, max_value)` definition of value range of an images, important when part of the range is negative, e.g. `(-1,1)`.
+
 # Pytorch MS-SSIM
 
 Fast and differentiable MS-SSIM and SSIM for pytorch 1.0+
